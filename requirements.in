@@ -1,0 +1,7 @@
+python-dotenv
+flask
+Flask-SQLAlchemy
+Flask-BasicAuth
+short_url
+validators
+uwsgi

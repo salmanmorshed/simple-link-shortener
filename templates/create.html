@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Link Shortener</title>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        header {
+            text-align: center;
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <article>
+        <header>Link Shortener</header>
+        <form>
+            <input type="url" title="Link" placeholder="Enter a link (e.g. https://...)" required>
+            <div class="grid">
+                <div></div>
+                <button type="submit">Shorten Link</button>
+                <div></div>
+            </div>
+        </form>
+        <footer hidden>
+            <a href="#"></a>
+            <ins hidden>Copied</ins>
+        </footer>
+    </article>
+</main>
+<script>
+    function resetFooter() {
+        document.querySelector('footer').setAttribute('hidden', '');
+        document.querySelector('footer ins').setAttribute('hidden', '');
+    }
+
+    document.querySelector('form').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        resetFooter();
+        document.querySelector('form button').ariaBusy = 'true';
+        const response = await fetch('/create', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({url: document.querySelector('form input[type=url]').value})
+        });
+        document.querySelector('form button').ariaBusy = 'false';
+        const data = await response.json();
+        if (response.ok) {
+            document.querySelector('form input[type=url]').value = '';
+            document.querySelector('footer').removeAttribute('hidden');
+            document.querySelector('footer a').innerText = data['short_link'];
+        } else if (response.status === 400) {
+            alert(data['detail']);
+        } else {
+            alert('Unknown error');
+        }
+    });
+
+    document.querySelector('footer a').addEventListener('click', async function (event) {
+        event.preventDefault();
+        await navigator.clipboard.writeText(this.innerText);
+        document.querySelector('footer ins').removeAttribute('hidden');
+    });
+</script>
+</body>
+</html>
