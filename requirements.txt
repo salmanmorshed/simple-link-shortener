@@ -29,6 +29,8 @@ markupsafe==2.1.2
     # via
     #   jinja2
     #   werkzeug
+psycopg2==2.9.6
+    # via -r requirements.in
 python-dotenv==1.0.0
     # via -r requirements.in
 short-url==1.2.2
