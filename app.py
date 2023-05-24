@@ -34,6 +34,11 @@ app.config['BASIC_AUTH_PASSWORD'] = os.environ['APP_PASSWORD']
 basic_auth = BasicAuth(app)
 
 
+@app.route('/')
+def home():
+    return redirect(os.environ.get('APP_HOME_REDIRECT', '/create'))
+
+
 @app.route('/create', methods=['GET', 'POST'])
 @basic_auth.required
 def create_link():
