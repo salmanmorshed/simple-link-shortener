@@ -62,8 +62,12 @@
 
     document.querySelector('footer a').addEventListener('click', async function (event) {
         event.preventDefault();
-        await navigator.clipboard.writeText(this.innerText);
-        document.querySelector('footer ins').removeAttribute('hidden');
+        if (navigator.clipboard) {
+            await navigator.clipboard.writeText(this.innerText);
+            document.querySelector('footer ins').removeAttribute('hidden');
+        } else {
+            alert('Clipboard disabled');
+        }
     });
 </script>
 </body>
