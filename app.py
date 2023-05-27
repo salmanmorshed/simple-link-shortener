@@ -34,17 +34,16 @@ app.config['BASIC_AUTH_PASSWORD'] = os.environ['APP_PASSWORD']
 basic_auth = BasicAuth(app)
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
-    return redirect(os.environ.get('APP_HOME_REDIRECT', '/create'))
+    if request.args.get('create') is not None:
+        return render_template('create.html')
+    return redirect(os.environ.get('APP_HOME_REDIRECT', '/?create'))
 
 
-@app.route('/create', methods=['GET', 'POST'])
+@app.route('/create', methods=['POST'])
 @basic_auth.required
 def create_link():
-    if request.method == 'GET':
-        return render_template('create.html')
-
     url = request.json.get('url')
     if url is None or not validators.url(url):
         return jsonify({'detail': 'Invalid URL'}), 400
